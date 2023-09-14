@@ -1,0 +1,1 @@
+python3 task_graph.py --json-path "./graph.json"

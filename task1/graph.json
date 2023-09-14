@@ -1,0 +1,36 @@
+{
+    "value": "1",
+    "leafs": [
+        {
+            "value": "2",
+            "leafs": [
+                {
+                    "value": "3",
+                    "leafs": []
+                },
+                {
+                    "value": "4",
+                    "leafs": [
+                        {
+                            "value": "5",
+                            "leafs": [
+                                {
+                                    "value": "8",
+                                    "leafs": []
+                                },
+                                {
+                                    "value": "7",
+                                    "leafs": []
+                                }
+                            ]
+                        },
+                        {
+                            "value": "6",
+                            "leafs": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
