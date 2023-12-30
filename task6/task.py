@@ -3,27 +3,37 @@ import json
 
 def aggregate_rankings(rankings):
     d = defaultdict(list)
+    w = 1.0
     for ranks in rankings:
-        for i, elem in enumerate(ranks, 1):
+        for elem in ranks:
             if type(elem) == list:
+                temp_weight = w + (len(elem) - 1) / 2
                 for inner_elem in elem:
-                    d[inner_elem].append(i)
+                    d[inner_elem].append(temp_weight)
+                w += len(elem)
             else:
-                d[elem].append(i)
+                d[elem].append(w)
+                w += 1
     return d
 
 
-def find_D(marks):
-    n = len(marks)
+def find_S(marks):
     X = dict()
     for key, val in marks.items():
         X[key] = sum(val)
     
-    D_X = sum(X.values()) / n
-    
-    D = sum([(x_i - D_X)**2 for x_i in X])
-    D /= n - 1
-    return D
+    D_X = sum(X.values()) / len(X)
+    S = sum([(x_i - D_X)**2 for x_i in X.values()])
+    return S
+
+
+def find_T(ranks):
+    t_i = 0
+    for elem in ranks:
+        if type(elem) == list:
+            h_k = len(elem)
+            t_i += h_k ** 3 - h_k
+    return t_i
 
 
 def get_json(filename):
@@ -35,16 +45,20 @@ def get_json(filename):
 def task(filenames):
     rankings = [get_json(filename) for filename in filenames]
     aggregated = aggregate_rankings(rankings)
-    D = find_D(aggregated)
-    return D 
+    S = find_S(aggregated)
+    m, n = len(rankings), len(aggregated)
+
+
+    D = S / (n - 1)
+    T = sum([find_T(ranks) for ranks in rankings])
+    D_max =  (m**2 * (n**3 - n) - m * T) / (12 * (n - 1))
+    
+    W = D / D_max
+    return W
 
 
 
 if __name__ == '__main__':
-    experts_1 = ['ranking_A.json', 'ranking_B.json']
-    exports_2 = ['ranking_A.json', 'ranking_C.json']
-    D1 = task(experts_1)
-    D2 = task(exports_2)
-    print(f"W_1 = {D1 / max(D1, D2)}")
-    print(f"W_2 = {D2 / max(D1, D2)}")
-
+    experts = ['ranking_A.json', 'ranking_B.json', 'ranking_C.json']
+    W = task(experts)
+    print(f"W = {W:.2f}")
